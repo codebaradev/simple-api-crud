@@ -23,4 +23,24 @@ class StudentTest extends TestCase
             'prodi' => $student->prodi,
         ]);
     }
+
+    public function testIndex()
+    {
+        $student = Student::factory()->create();
+
+        $response = $this->get('/students');
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                [
+                    'id' => $student->id,
+                    'name' => $student->name,
+                    'nim' => $student->nim,
+                    'prodi' => $student->prodi,
+                    'created_at' => $student->created_at->toISOString(),
+                    'updated_at' => $student->updated_at->toISOString(),
+                ],
+            ],
+        ]);
+    }
 }
