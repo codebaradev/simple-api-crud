@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\StudentController;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -16,4 +17,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::apiResource('students', StudentController::class);
+
+Route::post('/users/register', [UserController::class, 'register'])
+    ->name('users.register');
 
