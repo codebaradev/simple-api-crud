@@ -15,6 +15,7 @@ class AuthTest extends TestCase
     {
         $response = $this->post('/users/register'. [
             'name' => fake()->name(),
+            'username' => fake()->unique()->userName(),
             'email' => fake()->unique()->safeEmail(),
             'password' => fake()->password()
         ]);
