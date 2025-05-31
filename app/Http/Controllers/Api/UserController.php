@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -53,13 +54,31 @@ class UserController extends Controller
         }
     }
 
-    public function profile()
+    public function profile(Request $request)
     {
+        $user = $request->user();
 
+        if ($user) {
+            return response()->json([
+                'status' => true,
+                'message' => "User Profile Retrieved Successfully",
+                'data' => $user
+            ]);
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "User not authenticated"
+            ], 401);
+        }
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
+        $request->user()->tokens()->delete();
 
+        return response()->json([
+            'status' => true,
+            'message' => "User Logged Out Successfully"
+        ]);
     }
 }
