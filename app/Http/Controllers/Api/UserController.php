@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -31,12 +32,25 @@ class UserController extends Controller
     {
         $data = $request->validated();
 
-        $user = User::query()->where('email', $data['email'])->first();
+        $user = User::where('email', $data['email_username'])
+            ->orWhere('username', $data['email_username'])
+            ->first();
 
-        return response()->json([
-            'status' => "success",
-            'message' => "User Logged In Successfully"
-        ]);
+        if ($user || Hash::check($data['password'], $user->password)) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'status' => true,
+                'message' => "User Logged In Successfully",
+                'token' => $token
+            ]);
+
+        } else {
+            return response()->json([
+                'status' => false,
+                'message' => "Username, Email or Password is incorrect"
+            ], 401);
+        }
     }
 
     public function profile()
