@@ -37,13 +37,62 @@ class AuthTest extends TestCase
             'password' => $user->password
         ]);
 
-        $user = User::where('email', $user->email)->orWhere('username', $user->username)->first();
+        $token = $response->json('token');
 
         $response->assertStatus(200)
                 ->assertJson([
                     'status' => true,
                     'message' => "User Logged In Successfully",
-                    'token' => $user->token
+                ]);
+    }
+
+    public function testProfile(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/users/login', [
+            'email_username' => $user->username,
+            'password' => $user->password
+        ]);
+
+        $token = $response->json('token');
+
+        $response = $this->get('/api/users/profile', [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ]);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'status' => true,
+                    'message' => "User Profile Retrieved Successfully",
+                    'data' => $user->toArray()
+                ]);
+    }
+
+    public function testLogout(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/api/users/login', [
+            'email_username' => $user->username,
+            'password' => $user->password
+        ]);
+
+        $token = $response->json('token');
+
+        $response = $this->delete('/api/users/logout', [
+            'email_username' => $user->username,
+            'password' => $user->password
+        ], [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ]);
+
+        $response->assertStatus(200)
+                ->assertJson([
+                    'status' => true,
+                    'message' => "User Logged Out Successfully"
                 ]);
     }
 }

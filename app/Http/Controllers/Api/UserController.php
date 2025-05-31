@@ -24,7 +24,7 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'status' => "success",
+            'status' => true,
             'message' => "User Registered Successfully"
         ]);
     }

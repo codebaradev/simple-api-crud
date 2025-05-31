@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Client\ResponseSequence;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StudentRequest extends FormRequest
 {
@@ -26,5 +29,14 @@ class StudentRequest extends FormRequest
             'nim' => ['required', 'string', 'max:10', 'unique:students,nim'],
             'prodi' => ['required', 'string', 'in:IK,SI,MA,TP,TA,SD'],
         ];
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => false,
+            'message' => 'Validation Error',
+            'errors' => $validator->errors()
+        ]));
     }
 }

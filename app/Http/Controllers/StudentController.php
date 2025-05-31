@@ -37,7 +37,7 @@ class StudentController extends Controller
         $student = Student::create($data);
 
         return response()->json([
-            'status' => 'success',
+            'status' => true,
             'message' => 'Student created successfully'
         ]);
     }
@@ -67,7 +67,7 @@ class StudentController extends Controller
         $student->save($data);
 
         return response()->json([
-            'status' => 'success',
+            'status' => true,
             'message' => 'Student updated successfully'
         ]);
     }
@@ -80,7 +80,7 @@ class StudentController extends Controller
         $student->delete();
 
         return response()->json([
-            'status' => 'success',
+            'status' => true,
             'message' => 'Student deleted successfully'
         ]);
     }
